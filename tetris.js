@@ -12,6 +12,7 @@ const BLOCK_SIZE = 30;
 
 let grid, images, currentPiece, currentPos, dropInterval, lastDropTime;
 let gameActive = false; // Track if the game is active
+let gameLoopId; // Store the requestAnimationFrame ID
 
 const shapes = [
     [[1, 0], [0, 0], [0, 1], [1, 1]], // Square
@@ -187,18 +188,19 @@ function startGameLoop() {
     drawPiece();
     drawBorder(); // Draw the border around the game window
 
-    requestAnimationFrame(startGameLoop);
+    gameLoopId = requestAnimationFrame(startGameLoop); // Store the ID for stopping the loop
 }
 
 function gameOver() {
     gameActive = false; // Stop spawning new pieces
+    cancelAnimationFrame(gameLoopId); // Stop the game loop
     overlay.style.display = 'flex';
     retryButton.style.display = 'block';
     playButton.style.display = 'none';
 }
 
 document.addEventListener('keydown', (e) => {
-    if (!currentPiece) return;
+    if (!currentPiece || !gameActive) return; // Prevent controls if game is not active
 
     switch (e.key) {
         case 'ArrowLeft':
