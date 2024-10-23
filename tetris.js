@@ -1,4 +1,4 @@
-const canvas = document.getElementById('tetris');
+const canvas = document.getElementById('tetris'); 
 const ctx = canvas.getContext('2d');
 const overlay = document.getElementById('overlay');
 const playButton = document.getElementById('playButton');
@@ -11,6 +11,7 @@ const COLS = 10;
 const BLOCK_SIZE = 30;
 
 let grid, images, currentPiece, currentPos, dropInterval, lastDropTime;
+let gameActive = false; // Track if the game is active
 
 const shapes = [
     [[1, 0], [0, 0], [0, 1], [1, 1]], // Square
@@ -43,6 +44,7 @@ function initGame() {
     dropInterval = 1000;
     lastDropTime = 0;
     overlay.style.display = 'none'; 
+    gameActive = true; // Game starts
     spawnPiece();
     startGameLoop();
 }
@@ -164,6 +166,8 @@ function spawnPiece() {
 }
 
 function startGameLoop() {
+    if (!gameActive) return; // Stop the loop if the game is not active
+
     const now = Date.now();
     const deltaTime = now - lastDropTime;
 
@@ -187,6 +191,7 @@ function startGameLoop() {
 }
 
 function gameOver() {
+    gameActive = false; // Stop spawning new pieces
     overlay.style.display = 'flex';
     retryButton.style.display = 'block';
     playButton.style.display = 'none';
